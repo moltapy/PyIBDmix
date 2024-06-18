@@ -57,7 +57,7 @@ class MODERNVCF(VCFFILE):
 
     # 私有变量初始化函数：
     def _set_index(self):
-        header = self.__vcftext[0].strip().split("\t")
+        header = self.vcf()[0].strip().split("\t")
         index_out = {}
         try:
             index_out.update({
@@ -76,7 +76,7 @@ class MODERNVCF(VCFFILE):
     def _set_pool(self):
         pos_pool = set()
         pos = self.__index_dict["pos"]
-        for line in self.__vcftext[1:]:
+        for line in self.vcf()[1:]:
             line = line.strip().split("\t")
             pos_pool.add(line[pos])
         return pos_pool
@@ -101,7 +101,7 @@ class ARCHAICVCF(VCFFILE):
     # 私有变量初始化函数
     def _set_index(self):
         index_out = {}
-        header = self.__vcftext[0].strip().spilt("\t")
+        header = self.vcf()[0].strip().spilt("\t")
         try:
             index_out.update({
                 "chrom":header.index("#CHROM"),
@@ -125,8 +125,8 @@ class ARCHAICVCF(VCFFILE):
 
     # 重写+号操作符用于merge操作，并返回状态
     def __add__(self,modern_file:MODERNVCF) -> bool:
-        header = self.__vcftext[0].strip().spilt("\t")
-        data_sample = self.__vcftext[1].strip().split("\t")
+        header = self.vcf()[0].strip().spilt("\t")
+        data_sample = self.vcf()[1].strip().split("\t")
         data_modern = modern_file.vcf()[1].strip().split("\t")
         archaic = header[self.get("archaic")]
         chrom = data_sample[self.get("chrom")]
@@ -134,7 +134,7 @@ class ARCHAICVCF(VCFFILE):
         if not chrom_modern == chrom:
             print("You input the Worng files, chromsomes of Archaic VCF and Modern VCF cannot match!\n")
             exit(1)
-        sample = modern_file.__vcftext[0].strip().split("\t")[modern_file.get("sample"):]
+        sample = modern_file.vcf()[0].strip().split("\t")[modern_file.get("sample"):]
         try:
             with gzip.open(f"{archaic}_{chrom}.gz","wt") as out_file:
                 # 输出header
@@ -142,7 +142,7 @@ class ARCHAICVCF(VCFFILE):
                 # 初始化现代人VCF的文件指针
                 seek_pointer = 1
                 # 遍历古人中的行
-                for line in self.__vcftext[1:]:
+                for line in self.vcf()[1:]:
                     line = line.strip().split("\t")
                     pos = int(line[self.get("pos")])
                     ref = line[self.get("ref")]
