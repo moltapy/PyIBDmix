@@ -6,6 +6,7 @@ class VCFFILE:
     # 传入参数：filename
     def __init__(self, filename: str):
         self._filename = filename
+        self._maintext = self._get_maintext()
 
     # 判断file是否是gz压缩格式
     def _is_gzipped(self) -> bool:
@@ -47,19 +48,19 @@ class MODERNVCF(VCFFILE):
 
     # 定义获取文件内容的接口
     def get_text(self):
-        return self._get_maintext()
+        return self._maintext
 
     # 获取样本header开始列，以FORMAT+1为基准,只用sample_index做header控制
     def _get_sampleindex(self) -> int:
         try:
-            return self._get_maintext()[0].strip().split("\t").index("FORMAT")+1
+            return self._maintext[0].strip().split("\t").index("FORMAT")+1
         except ValueError:
             print("Cannot find sample index，Check your header!\n")
             exit(1)
     # 将对应位置写入_header_dict
 
     def _header_dict_setter(self):
-        header_line = self._get_maintext()[0].strip().split("\t")
+        header_line = self._maintext[0].strip().split("\t")
         try:
             self._header_dict.update({"chrom": header_line.index("#CHROM"),
                                       "pos": header_line.index("POS"),
@@ -83,7 +84,7 @@ class MODERNVCF(VCFFILE):
 
     def _pos_pool_setter(self) -> set:
         _pos_pool = set()
-        for line in self._get_maintext()[1:]:
+        for line in self._maintext()[1:]:
             line = line.strip().split("\t")
             _pos_pool.add(line[1])
         return _pos_pool
@@ -95,7 +96,7 @@ class MODERNVCF(VCFFILE):
         return self._pos_pool
 
     def get_samplecount(self) -> int:
-        return len(self._get_maintext()[0].strip().split("\t")[self._get_sampleindex():])
+        return len(self._maintext()[0].strip().split("\t")[self._get_sampleindex():])
 
 
 class ARCHAICVCF(VCFFILE):
@@ -105,10 +106,10 @@ class ARCHAICVCF(VCFFILE):
         self._header_dict_setter()
 
     def get_text(self):
-        return self._get_maintext()
+        return self._maintext()
 
     def _get_archaic_index(self) -> int:
-        header_line = self._get_maintext()[0].strip().split("\t")
+        header_line = self._maintext()[0].strip().split("\t")
         try:
             return header_line.index("FORMAT")+1
         except ValueError:
@@ -117,7 +118,7 @@ class ARCHAICVCF(VCFFILE):
 
     # 将对应位置写入_header_dict
     def _header_dict_setter(self):
-        header_line = self._get_maintext()[0].strip().split("\t")
+        header_line = self._maintext()[0].strip().split("\t")
         try:
             self._header_dict.update({"chrom": header_line.index("#CHROM"),
                                       "pos": header_line.index("POS"),
@@ -142,7 +143,7 @@ class ARCHAICVCF(VCFFILE):
     # 获得染色体号
 
     def get_chrom(self):
-        return self._get_maintext()[1].strip().split("\t")[self.get("chrom")]
+        return self._maintext()[1].strip().split("\t")[self.get("chrom")]
 
     # 重写“+”号运算符，使用archaic+modern的方式实现merge
     def __add__(self, modern_file: MODERNVCF) -> bool:
