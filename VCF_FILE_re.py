@@ -101,7 +101,7 @@ class ARCHAICVCF(VCFFILE):
     # 私有变量初始化函数
     def _set_index(self):
         index_out = {}
-        header = self.vcf()[0].strip().spilt("\t")
+        header = self.vcf()[0].strip().split("\t")
         try:
             index_out.update({
                 "chrom":header.index("#CHROM"),
