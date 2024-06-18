@@ -135,57 +135,52 @@ class ARCHAICVCF(VCFFILE):
             print("You input the Worng files, chromsomes of Archaic VCF and Modern VCF cannot match!\n")
             exit(1)
         sample = modern_file.vcf()[0].strip().split("\t")[modern_file.get("sample"):]
-        try:
-            with gzip.open(f"{archaic}_{chrom}.gz","wt") as out_file:
-                # 输出header
-                out_file.write("\t".join(['chrom', 'pos', 'ref', 'alt', archaic] + sample )+"\n")
-                # 初始化现代人VCF的文件指针
-                seek_pointer = 1
-                # 遍历古人中的行
-                for line in self.vcf()[1:]:
-                    print(line)
-                    line = line.strip().split("\t")
-                    pos = int(line[self.get("pos")])
-                    ref = line[self.get("ref")]
-                    alt = line[self.get("alt")]
-
-                    if not (len(ref) == 1 and len(alt) ==1):
-                        continue
-
-                    # 转换古人的基因型
-                    try:
-                        archaic_geno = str(int(line[self.get("archaic")][0])+int(line[self.get("archaic")][2]))
-                    except ValueError:
-                        archaic_geno = "0"
-
-                    # 检查是否在archaic_genotype中非0，modern中不出现的
-                    if not archaic_geno == "0" and pos not in modern_file.pos_pool:
-                        out_file.write("\t".join([chrom,pos,ref,alt,archaic_geno]+["0"]*len(sample))+"\n")
-                        continue
+        with gzip.open(f"{archaic}_{chrom}.gz","wt") as out_file:
+            # 输出header
+            out_file.write("\t".join(['chrom', 'pos', 'ref', 'alt', archaic] + sample )+"\n")
+            # 初始化现代人VCF的文件指针
+            seek_pointer = 1
+            # 遍历古人中的行
+            for line in self.vcf()[1:]:
+                print(line)
+                line = line.strip().split("\t")
+                pos = int(line[self.get("pos")])
+                ref = line[self.get("ref")]
+                alt = line[self.get("alt")]
+                if not (len(ref) == 1 and len(alt) ==1):
+                    continue
+                # 转换古人的基因型
+                try:
+                    archaic_geno = str(int(line[self.get("archaic")][0])+int(line[self.get("archaic")][2]))
+                except ValueError:
+                    archaic_geno = "0"
+                # 检查是否在archaic_genotype中非0，modern中不出现的
+                if not archaic_geno == "0" and pos not in modern_file.pos_pool:
+                    out_file.write("\t".join([chrom,pos,ref,alt,archaic_geno]+["0"]*len(sample))+"\n")
+                    continue
+                
+                # 在现代人vcf文件中遍历寻找
+                if seek_pointer <len(modern_file.vcf())-1:
+                    for md_line in modern_file.vcf()[seek_pointer:]:
+                        md_line = md_line.strip().split("\t")
+                        md_pos = int(md_line[modern_file.get("pos")])
+                        md_ref = md_line[modern_file.get("ref")]
+                        md_alt = md_line[modern_file.get("alt")]
                     
-                    # 在现代人vcf文件中遍历寻找
-                    if seek_pointer <len(modern_file.vcf())-1:
-                        for md_line in modern_file.vcf()[seek_pointer:]:
-                            md_line = md_line.strip().split("\t")
-                            md_pos = int(md_line[modern_file.get("pos")])
-                            md_ref = md_line[modern_file.get("ref")]
-                            md_alt = md_line[modern_file.get("alt")]
-                        
-
-                        if pos > md_pos:
-                            seek_pointer += 1
-                            continue
-                        elif pos == md_pos:
-                            if (len(md_ref) ==1 and len(md_alt) ==1 and md_ref == ref 
-                                and (md_alt ==alt or alt == ".")):
-                                md_geno = [str(int(list(x)[0]+int(list(x)[2])) 
-                                               for x in md_line[modern_file.get("sample")])]
-                                out_file.write("\t".join([chrom,pos,ref,md_alt,archaic_geno]+md_geno)+"\n")
-                        else:
-                            break
-            return True
-        except:
-            return False
+                    if pos > md_pos:
+                        seek_pointer += 1
+                        continue
+                    elif pos == md_pos:
+                        if (len(md_ref) ==1 and len(md_alt) ==1 and md_ref == ref 
+                            and (md_alt ==alt or alt == ".")):
+                            md_geno = [str(int(list(x)[0]+int(list(x)[2])) 
+                                           for x in md_line[modern_file.get("sample")])]
+                            out_file.write("\t".join([chrom,pos,ref,md_alt,archaic_geno]+md_geno)+"\n")
+                    else:
+                        break
+        return True
+        #except:
+            #return False
                         
 
 
