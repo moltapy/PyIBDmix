@@ -149,8 +149,8 @@ class ARCHAICVCF(VCFFILE):
                     ref = line[self.get("ref")]
                     alt = line[self.get("alt")]
 
-                    #if not (len(ref) == 1 and len(alt) ==1):
-                        #continue
+                    if not (len(ref) == 1 and len(alt) ==1):
+                        continue
 
                     # 转换古人的基因型
                     try:
