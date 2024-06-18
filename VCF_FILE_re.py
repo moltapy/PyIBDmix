@@ -120,7 +120,7 @@ class ARCHAICVCF(VCFFILE):
         if attr in self.__index_dict.keys():
             return self.__index_dict[attr]
         else:
-            print(f"The Porperty {attr} is not present in the modern VCF file,Please Check!\n")
+            print(f"The Porperty {attr} is not present in the archaic VCF file,Please Check!\n")
             exit(1)     
 
     # 重写+号操作符用于merge操作，并返回状态
