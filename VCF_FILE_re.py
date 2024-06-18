@@ -161,6 +161,7 @@ class ARCHAICVCF(VCFFILE):
                 
                 # 在现代人vcf文件中遍历寻找
                 if seek_pointer <len(modern_file.vcf())-1:
+                    print("Right!\n")
                     for md_line in modern_file.vcf()[seek_pointer:]:
                         md_line = md_line.strip().split("\t")
                         md_pos = int(md_line[modern_file.get("pos")])
