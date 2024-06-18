@@ -7,6 +7,7 @@ gt_args = generate_gt_parser()
 
 # 读入并创建实例
 archaicvcf = ARCHAICVCF(gt_args.archaic)
+print(len(archaicvcf.vcf()))
 modernvcf = MODERNVCF(gt_args.modern)
 
 
