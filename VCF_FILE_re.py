@@ -172,8 +172,8 @@ class ARCHAICVCF(VCFFILE):
                         elif pos == md_pos:
                             if (len(md_ref) ==1 and len(md_alt) ==1 and md_ref == ref 
                                 and (md_alt ==alt or alt == ".")):
-                                md_geno = [str(int(x[0])+int((x[2]))) 
-                                               for x in md_line[modern_file.get("sample")]]
+                                md_geno = [str(int(x[0])+int(x[2])) 
+                                               for x in md_line[modern_file.get("sample")]:]
                                 out_file.write("\t".join([chrom,str(pos),ref,md_alt,archaic_geno]+md_geno)+"\n")
                         else:
                             break
