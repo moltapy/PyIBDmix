@@ -156,7 +156,7 @@ class ARCHAICVCF(VCFFILE):
                     archaic_geno = "0"
                 # 检查是否在archaic_genotype中非0，modern中不出现的
                 if not archaic_geno == "0" and pos not in modern_file.pos_pool:
-                    out_file.write("\t".join([chrom,pos,ref,alt,archaic_geno]+["0"]*len(sample))+"\n")
+                    out_file.write("\t".join([chrom,str(pos),ref,alt,archaic_geno]+["0"]*len(sample))+"\n")
                     continue
                 
                 # 在现代人vcf文件中遍历寻找
@@ -175,7 +175,7 @@ class ARCHAICVCF(VCFFILE):
                                 and (md_alt ==alt or alt == ".")):
                                 md_geno = [str(int(list(x)[0]+int(list(x)[2])) 
                                                for x in md_line[modern_file.get("sample")])]
-                                out_file.write("\t".join([chrom,pos,ref,md_alt,archaic_geno]+md_geno)+"\n")
+                                out_file.write("\t".join([chrom,str(pos),ref,md_alt,archaic_geno]+md_geno)+"\n")
                         else:
                             break
         return True
