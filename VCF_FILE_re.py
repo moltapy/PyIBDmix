@@ -125,7 +125,7 @@ class ARCHAICVCF(VCFFILE):
 
     # 重写+号操作符用于merge操作，并返回状态
     def __add__(self,modern_file:MODERNVCF) -> bool:
-        header = self.vcf()[0].strip().spilt("\t")
+        header = self.vcf()[0].strip().split("\t")
         data_sample = self.vcf()[1].strip().split("\t")
         data_modern = modern_file.vcf()[1].strip().split("\t")
         archaic = header[self.get("archaic")]
