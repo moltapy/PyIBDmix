@@ -143,6 +143,7 @@ class ARCHAICVCF(VCFFILE):
                 seek_pointer = 1
                 # 遍历古人中的行
                 for line in self.vcf()[1:]:
+                    print(line)
                     line = line.strip().split("\t")
                     pos = int(line[self.get("pos")])
                     ref = line[self.get("ref")]
