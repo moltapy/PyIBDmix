@@ -1,6 +1,6 @@
-# 使用IO优化的策略彻底破产，考虑mmap或者生成器
+# 使用IO优化的策略彻底破产，考虑mmap(x)因为内存大小不同或者生成器
 import gzip
-
+import mmap
 
 # 定义基类VCFFILE
 class VCFFILE:
