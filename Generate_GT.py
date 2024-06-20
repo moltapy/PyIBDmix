@@ -1,6 +1,6 @@
 from PramaParser import generate_gt_parser
-from VCF_FILE_re import MODERNVCF
-from VCF_FILE_re import ARCHAICVCF
+from VCF_FILE_Python_IOBUFFER import MODERNVCF
+from VCF_FILE_Python_IOBUFFER import ARCHAICVCF
 
 # 获取解释器内的变量
 gt_args = generate_gt_parser()
