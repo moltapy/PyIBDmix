@@ -14,8 +14,8 @@ class VCFFILE:
                 magic = in_binfile.read(2)
                 return magic == b'\x1f\x8b'
         if _is_gzipped():
-            with gzip.open(self.__filename, "rt", buffering=4096) as in_file:
-                reader = BufferedReader(in_file)
+            with gzip.open(self.__filename, "rb", buffering=4096) as in_binfile:
+                reader = BufferedReader(in_binfile)
                 for line in reader:
                     if line.startswith('##'):
                         header_count += 1
@@ -25,8 +25,8 @@ class VCFFILE:
                     else:
                         vcf_lines.append(line)
         else:
-            with open(self.__filename, "rt", buffering=4096) as in_file:
-                reader = BufferedReader(in_file)
+            with open(self.__filename, "rb", buffering=4096) as in_binfile:
+                reader = BufferedReader(in_binfile)
                 for line in reader:
                     if line.startswith('##'):
                         header_count += 1
